@@ -10,6 +10,8 @@ Route::get('/', function () {
 });
 
 
+Route::get('/admin', [AuthController::class, 'dashboard']);
+
 
 Route::get('/register', [AuthController::class, 'registrationPage']);
 Route::post('/register', [AuthController::class, 'register'])->name('register');
@@ -19,6 +21,6 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::resource('posts', CategoryController::class);
+Route::resource('categories', CategoryController::class);
 Route::resource('posts', PostController::class);
 
