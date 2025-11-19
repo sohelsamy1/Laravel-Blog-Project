@@ -67,8 +67,8 @@
             <li>
               {{-- <a href="" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Logout</a> --}}
               <form action="{{ route('logout') }}" method="post" class="p-3 inlineblock px-4 py-2 text-gray-700 hover:bg-gray-200">
-                        @csrf
-                        <button class="" type="submit">Logout</button>
+                @csrf
+                <button class="block px-4 py-2 text-gray-700 hover:bg-gray-200" type="submit">Logout</button>
               </form>
             </li>
           </ul>

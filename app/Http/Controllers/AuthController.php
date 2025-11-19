@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use App\Models\User;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,9 +13,12 @@ class AuthController extends Controller
 
 
     public function dashboard(){
-        return view('admin.dashboard');
+        $user_id = Auth::user()->id;
+        $categories = Category::count();
+        $postsCount = Post::where('user_id', $user_id)->count();
+        return view('admin.dashboard', compact('categories', 'postsCount'));
     }
-    
+
 
     public function registrationPage(){
         return view('auth.register');
@@ -34,7 +39,7 @@ class AuthController extends Controller
 
     Auth::attempt($request->only('email', 'password'));
 
-    return redirect('/');
+    return redirect('/admin');
 
  }
 
