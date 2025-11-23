@@ -12,60 +12,64 @@ class AuthController extends Controller
 {
 
 
-    public function dashboard(){
+    public function dashboard()
+    {
         $user_id = Auth::user()->id;
-        $categories = Category::count();
+        $categoriesCount = Category::count();
         $postsCount = Post::where('user_id', $user_id)->count();
-        return view('admin.dashboard', compact('categories', 'postsCount'));
+        return view('admin.dashboard', compact('categoriesCount', 'postsCount'));
     }
 
 
-    public function registrationPage(){
+    public function registrationPage()
+    {
         return view('auth.register');
     }
 
-    public function register(Request $request){
-    $request->validate([
-     'name' => 'required',
-     'email' => 'required|email|unique:users,email',
-     'password' => 'required|confirmed'
-    ]);
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|confirmed'
+        ]);
 
-    User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => $request->password
-    ]);
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password
+        ]);
 
-    Auth::attempt($request->only('email', 'password'));
+        Auth::attempt($request->only('email', 'password'));
 
-    return redirect('/admin');
+        return redirect('/admin');
 
- }
+    }
 
- public function loginPage(){
-    return view('auth.login');
- }
+    public function loginPage()
+    {
+        return view('auth.login');
+    }
 
- public function login(Request $request){
-    $request->validate([
-        'email' => 'required|email',
-         'password' => 'required'
-    ]);
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
 
-     if(!Auth::attempt($request->only('email', 'password'))){
-        return back()->with('status', 'Invalid login details' );
-     }
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return back()->with('status', 'Invalid login details');
+        }
 
-      return redirect()>route('dashboard');
- }
+        return redirect()->route('dashboard');
+    }
 
-  public function logout(){
-
-    Auth::logout();
-    return redirect()->route('login');
-
- }
+    public function logout()
+    {
+        Auth::logout();
+        return redirect()->route('login');
+    }
 
 
 }

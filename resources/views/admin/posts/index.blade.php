@@ -22,6 +22,8 @@
           <th class="px-4 py-2 border">image</th>
           <th class="px-4 py-2 border">Title</th>
           <th class="px-4 py-2 border">Author</th>
+          <th class="px-4 py-2 border">Post Time</th>
+          <th class="px-4 py-2 border">Date & time</th>
           <th class="px-4 py-2 border">Actions</th>
 
         </tr>

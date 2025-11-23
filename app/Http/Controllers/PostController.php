@@ -35,37 +35,35 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-    $request->validate([
-            'name' => 'required|min:3|unique:post,name',
+        // dd($request->all());
+        $request->validate([
+            'title' => 'required|min:3|unique:posts,title',
             'content' => 'required|string',
-            'categori_id' => 'required|exists:categories,id',
+            'category_id' => 'required|exists:categories,id',
             'user_id' => 'required',
-            'featured_image' => 'nullable|image|mimes:jpeg,jpg,pnj,gif,svg'
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,pnj,gif,svg'
         ]);
 
-         // Handle Image Upload
+        // Handle Image Upload
         $imagePath = null;
 
-        if($request->hasFile('featured_image')) {
+        if ($request->hasFile('featured_image')) {
             $image = $request->file('featured_image');
-            $imageName = time() . '_' . 'myapp' . '_' . $image->getClientOriginalName();
+            $imageName = time() . '_' . 'myapp' . '_' . $image->getClientOriginalExtension();
             $imagePath = 'uploads/' . $imageName;
             $image->move(public_path('uploads'), $imageName);
         }
 
-
         // Create Post
         Post::create([
             'title' => $request->title,
-            // 'content' => $request->content,
+            'content' => $request->content,
             'category_id' => $request->category_id,
             'user_id' => $request->user_id,
             'featured_image' => $imagePath
         ]);
 
         return redirect()->route('posts.index')->with('success', 'Post created successfully');
-
-
     }
 
     /**
@@ -94,42 +92,41 @@ class PostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-
-        $post = Post::findOrFail($id);
         // Validation
         $request->validate([
-            'title' => 'required|min:3|unique:posts,name'. $post->id,
+            'title' => 'required|min:3|unique:posts,title,' . $id,
             'content' => 'required|string',
             'category_id' => 'required|exists:categories,id',
             'user_id' => 'required',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg'
         ]);
 
-       // File Upload Handling
-        if($request->hasFile('featured_image')) {
+        $post = Post::findOrFail($id);
+
+        $imagePath = null;
+        // File Upload Handling
+        if ($request->hasFile('featured_image')) {
             // Delete Previous Image
-            if($post->featured_image && file_exists(public_path($post->featured_image))) {
+            if ($post->featured_image && file_exists(public_path($post->featured_image))) {
                 unlink(public_path($post->featured_image));
             }
 
             // Handle Newly Uploaded Image
             $image = $request->file('featured_image');
-            $imageName = time() . '_' . 'myapp' . '_' . $image->getClientOriginalName();
+            $imageName = time() . '_' . 'myapp' . '_' . $image->getClientOriginalExtension();
             $imagePath = 'uploads/' . $imageName;
             $image->move(public_path('uploads'), $imageName);
         }
 
-         $post->update([
+        $post->update([
             'title' => $request->title,
-            // 'content' => $request->content,
+            'content' => $request->content,
             'category_id' => $request->category_id,
             'user_id' => $request->user_id,
             'featured_image' => $imagePath
         ]);
 
         return redirect()->route('posts.index')->with('success', 'Post updated successfully');
-
-
     }
 
     /**
@@ -141,11 +138,11 @@ class PostController extends Controller
 
         // If post has image, delete it
         // Delete Previous Image
-            if($post->featured_image && file_exists(public_path($post->featured_image))) {
-                unlink(public_path($post->featured_image));
-            }
+        if ($post->featured_image && file_exists(public_path($post->featured_image))) {
+            unlink(public_path($post->featured_image));
+        }
 
-            $post->delete();
+        $post->delete();
 
         return redirect()->route('posts.index')->with('success', 'Post deleted successfully');
     }
